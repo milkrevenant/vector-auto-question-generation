@@ -7,13 +7,14 @@
 ## 현재 구현된 기능
 
 -  **PDF 분할**: 수능 PDF를 페이지별로 분할
--  **문제 DB**: 2023-2025년 수능 문제를 JSON으로 구조화
--  **Vector 기반 검색**: ChromaDB와 OpenAI Embeddings를 활용한 유사 문제 검색
+-  **문제 DB**: 대학수학능력시험, 대학수학능력시험 모의평가 문제를 JSON으로 구조화
+-  **Vector 기반 검색**: ChromaDB와 OpenAI Embeddings을 활용한 유사 문제 검색
 -  **연구 기반**: 자동 문항 생성 기능 분석을 위한 기초 프로젝트
 
-## 개발 예정 기능 
+## 개발 예정 기능 / db 변환
 
 -  **문제 자동 생성**: 새로운 지문에 맞는 수능 스타일 문제 생성 (주요 목표)
+-  **DB**종류에 따른 타당성 검증 필요(현재는 ChromaDB이지만 추후 다른 방식 필요할 수 있음.)
 
 ## 시스템 구성
 
@@ -39,6 +40,9 @@
 - 벡터 데이터베이스 검색 인터페이스
 - 유사 문제 검색 및 분석
 - 대화형 검색 지원
+
+### 'search_and_expand.py'
+- 'query_sn_db.py'가 단순히 가까운 벡터값의 지문/문제를 알려주는 거라면 'search_and_expand.py'는 좀 더 세밀하게 그 세부값을 보여주는 것으로 구축
 
 ### 3. 문제 생성 시스템 (향후 개발 예정)
 
@@ -148,12 +152,13 @@ snoriginal/
 - `python-dotenv`: 환경 변수 관리
 
 # 경로 및 주의사항
-### 기본 실행
+
+- 기본 실행 방법
 $ python build_sn_db.py
 # ./db 폴더의 JSON을 임베딩해 ./sn_csat.db에 저장
 
-### 경로 커스텀
-$ SN_SRC_DIR=/mnt/datasets/json \
+- 경로 커스텀 필요한 부분
+$ SN_SRC_DIR=/mnt/datasets/json \ 
   SN_DB_PATH=$HOME/data/sn_csat.db \
   python build_sn_db.py
 
