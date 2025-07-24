@@ -137,10 +137,9 @@ snoriginal/
 
 ## 특징
 
--  **연구 중심**: 수능 문제 패턴 분석을 위한 기초 연구 프로젝트
--  **데이터**: 수동 검증을 거친 정확한 문제 데이터
+-  **데이터**: 수동 검증을 거친 문제 데이터이기 때문에 불완전함.
 -  **검색**: ChromaDB의 효율적인 벡터 검색
--  **임베딩**: OpenAI text-embedding-3-large 모델 (3072차원)
+-  **임베딩**: OpenAI text-embedding-3-large  (3072)
 
 ## Requirements
 
