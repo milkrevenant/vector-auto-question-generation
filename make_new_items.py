@@ -1,10 +1,11 @@
 # make_new_items.py  ◆◆◆ 2025‑07‑24 수정 ◆◆◆
 from pathlib import Path
 import os, re, json, textwrap, datetime
+import sys, argparse
 import chromadb
 from openai import OpenAI
 
-# ───────────────────────── ❶ 설정값 ─────────────────────────
+# ───────────────────────── ❶ parameters ─────────────────────────
 DB_PATH      = Path(os.getenv("SN_DB_PATH", "./sn_csat.db"))
 EMBED_MODEL  = os.getenv("OPENAI_EMBED_MODEL", "text-embedding-3-large")
 CHAT_MODEL   = os.getenv("OPENAI_CHAT_MODEL",  "gpt-4.1-mini")
@@ -64,7 +65,25 @@ def generate_items(passage: str, examples: list[dict]) -> str:
 
 # ───────────────────────── ❸ 메인 ─────────────────────────
 if __name__ == "__main__":
-    passage = input("🔍 새 지문 전문을 붙여 넣으세요:\n")
+    import sys, argparse
+
+    parser = argparse.ArgumentParser(
+        description="새 지문(파일·STDIN·인터랙티브)을 받아 문제를 생성합니다."
+    )
+    parser.add_argument(
+        "-f", "--file",
+        metavar="PATH",
+        help="UTF-8 텍스트 파일 경로"
+    )
+    args = parser.parse_args()
+
+    if args.file:                               # 파일 입력
+        passage = Path(args.file).read_text(encoding="utf-8")
+    elif not sys.stdin.isatty():                # 파이프/리다이렉션
+        passage = sys.stdin.read()
+    else:                                       # 인터랙티브 입력
+        print("🔍 새 지문 입력 후 Ctrl‑D/⌘‑D 로 종료:")
+        passage = sys.stdin.read()
 
     # 예시: 상위 50 개에서 MAX_EXAMPLES만 사용 (그룹 필터 제거)
     vec   = embed(passage)
