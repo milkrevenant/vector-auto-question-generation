@@ -11,7 +11,7 @@
 -  **Vector 기반 검색**: ChromaDB와 OpenAI Embeddings를 활용한 유사 문제 검색
 -  **연구 기반**: 자동 문항 생성 기능 분석을 위한 기초 프로젝트
 
-## 개발 예정 기능 🚧
+## 개발 예정 기능 
 
 -  **문제 자동 생성**: 새로운 지문에 맞는 수능 스타일 문제 생성 (주요 목표)
 
@@ -33,7 +33,7 @@
 #### `build_sn_db.py`
 - JSON 문제 데이터를 벡터 임베딩으로 변환
 - OpenAI `text-embedding-3-large` 모델 사용 (3072)
-- ChromaDB에 저장 (코사인 유사도 기반)
+- ChromaDB에 저장 (코사인 유사도 기반) / 추후 다른 db로도 개발할 예정있음.
 
 #### `query_sn_db.py`
 - 벡터 데이터베이스 검색 인터페이스
@@ -47,7 +47,7 @@
   - 새로운 지문 입력 → 유사 문제 검색
   - 문제 패턴 분석 (유형, 난이도, 형식)
   - LLM과 검색된 문항을 통한 문제 생성
-- **현재 상태**: 파일이 아직 생성되지 않음
+- **현재 상태**: 파일이 아직 생성되지 않음, 문제 생성 안됨.
 
 ## 설치 및 사용법
 
@@ -147,10 +147,18 @@ snoriginal/
 - `tiktoken`: 토큰 계산
 - `python-dotenv`: 환경 변수 관리
 
-## 주의사항
+# 경로 및 주의사항
+### 기본 실행
+$ python build_sn_db.py
+# ./db 폴더의 JSON을 임베딩해 ./sn_csat.db에 저장
 
-- OpenAI API 키가 필요합니다
-- 생성된 문제는 검토가 반드시 필요합니다.
+### 경로 커스텀
+$ SN_SRC_DIR=/mnt/datasets/json \
+  SN_DB_PATH=$HOME/data/sn_csat.db \
+  python build_sn_db.py
+
+- OpenAI API 키가 필요
+- 생성된 문제는 검토가 반드시 필요(이건 어차피 나중에)
 
 ## 라이선스
 

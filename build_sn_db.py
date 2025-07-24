@@ -1,4 +1,18 @@
 import os, glob, json, chromadb, tiktoken
+import hashlib, re
+ # ── 그룹 해시 생성 ─────────────────────────
+def canonical_passage(item: dict) -> str:
+    """passage 또는 context_box를 공백 1칸으로 정규화해 반환"""
+    txt = (item.get("passage") or item.get("context_box") or "")
+    return " ".join(txt.split())
+
+def passage_hash(item: dict, length: int = 12) -> str:
+    """
+    동일 지문이면 파일명이 달라도 동일 해시를 얻도록 SHA‑1 기반 그룹키 생성.
+    기본 12자(48bit) → 충돌 확률 1/2^48 ≈ 1.4e‑14
+    """
+    text = canonical_passage(item)
+    return hashlib.sha1(text.encode("utf-8")).hexdigest()[:length]
 from openai import OpenAI
 
 # ── ❶ 경로 설정 ──────────────────────────────
@@ -47,9 +61,11 @@ for path in files:
         k: v for k, v in item.items()
         if k not in ("passage", "question", "options") and v is not None
     }
+    # ― 그룹 해시 추가 ―
+    clean_meta["group"] = passage_hash(item)
     metas.append(clean_meta)
 
-# ── ❹ OpenAI 임베딩 (128개씩 배치) ─────────────
+# ── ❹ OpenAI 임베딩 (128개씩 배치) ───────────── 갯수 상관없음
 def embed(batch):
     res = openai.embeddings.create(
         model=EMBED_MODEL,
