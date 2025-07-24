@@ -155,7 +155,7 @@ snoriginal/
 
 - 기본 실행 방법
 $ python build_sn_db.py
-# ./db 폴더의 JSON을 임베딩해 ./sn_csat.db에 저장
+- ./db 폴더의 JSON을 임베딩해 ./sn_csat.db에 저장
 
 - 경로 커스텀 필요한 부분
 $ SN_SRC_DIR=/mnt/datasets/json \ 
