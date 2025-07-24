@@ -1,0 +1,20 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__filesystem__read_multiple_files",
+      "Bash(python3:*)",
+      "mcp__filesystem__list_directory",
+      "mcp__filesystem__read_file",
+      "Bash(rm:*)",
+      "Bash(mv:*)",
+      "Bash(ls:*)",
+      "Bash(for i in {35..45})",
+      "Bash(do mv \"25_06_$i.json\" \"25_06_$i_1.json\")",
+      "Bash(true)",
+      "Bash(done)",
+      "Bash(do mv \"25_06_$i_lang.json\" \"25_06_$i_2.json\")",
+      "Bash(python:*)"
+    ],
+    "deny": []
+  }
+}
