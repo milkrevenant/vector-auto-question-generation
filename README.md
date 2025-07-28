@@ -145,10 +145,11 @@ snoriginal/
 
 - `openai`: OpenAI 임베딩 모델 및 GPT API
 - `chromadb`: 벡터 데이터베이스
-- `pypdfium2`: PDF 이미지 변환
-- `PyPDF2`: PDF 텍스트 추출
+- `PyPDF2`: PDF 텍스트 추출 및 분할
 - `tiktoken`: 토큰 계산
 - `python-dotenv`: 환경 변수 관리
+- `numpy`: 수치 연산
+- `scikit-learn`: 머신러닝 유틸리티
 
 # 경로 및 주의사항
 

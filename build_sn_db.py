@@ -49,20 +49,27 @@ ids, docs, metas = [], [], []
 for path in files:
     with open(path, encoding="utf-8") as f:
         item = json.load(f)
-    # passage가 없으면 context_box로 대체할 수 있는지 확인
-    if not (item.get("passage") or item.get("context_box")) or not item.get("question"):
-        print(f"⚠️  Skip {path} (missing passage/context_box 또는 question)")
+    # 질문(question)이 없으면 스킵
+    if not item.get("question"):
+        print(f"⚠️  Skip {path} (missing question)")
         continue
 
     ids.append(item["id"])
     docs.append(merge_text(item))
-    # 메타데이터에서 None 값을 제거(Chroma는 None을 허용하지 않음)
-    clean_meta = {
-        k: v for k, v in item.items()
-        if k not in ("passage", "question", "options") and v is not None
-    }
+    # 메타데이터에서 None, dict, list 타입 값을 제거(Chroma는 dict/list 허용하지 않음)
+    clean_meta = {}
+    for k, v in item.items():
+        if k in ("passage", "question", "options"):
+            continue
+        if v is None:
+            continue
+        # primitive 타입만 허용
+        if isinstance(v, (str, int, float, bool)):
+            clean_meta[k] = v
     # ― 그룹 해시 추가 ―
     clean_meta["group"] = passage_hash(item)
+    # 원본 JSON 파일 경로 저장
+    clean_meta["file_path"] = path
     metas.append(clean_meta)
 
 # ── ❹ OpenAI 임베딩 (128개씩 배치) ───────────── 갯수 상관없음
