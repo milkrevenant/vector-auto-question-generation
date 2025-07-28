@@ -1,29 +1,23 @@
 {
   "id": "25_09_39_1",
-  "section": "언어와 매체",
   "passage": "",
   "question": "<보기>의 [조건]이 모두 실현된 문장으로 적절한 것은? [3점]",
-  "choices": [
+  "answer": 1,
+  "difficulty": "",
+  "additional_info": {"보기": "[조건]\n◦ 안긴절이 한 번만 나타날 것.\n◦ 안긴절에는 짧은 부정 표현이 나타날 것.\n◦ 안은문장은 사건시가 발화시보다 앞설 것."},
+  "options": [
     { "number": 1, "text": "그는 한동안 차갑지 않은 음식만 먹었었다." },
     { "number": 2, "text": "그는 바쁜 업무들이 안 끝났다고 통보했다." },
     { "number": 3, "text": "나는 결코 포기를 하지 않겠다고 결심했다." },
     { "number": 4, "text": "나는 그 버스가 제때 못 올 것을 예상한다." },
     { "number": 5, "text": "나는 그가 못 읽은 소설을 이미 다 읽었다." }
   ],
-  "answer": 1,
-  "question_type": "language_syntax",
-  "points": 3,
-  "difficulty": 4,
-  "has_images": false,
-  "additional_info": {
-    "보기": "[조건]\n◦ 안긴절이 한 번만 나타날 것.\n◦ 안긴절에는 짧은 부정 표현이 나타날 것.\n◦ 안은문장은 사건시가 발화시보다 앞설 것."
-  },
-  "metadata": {
-    "exam_type": "수능 모의평가",
-    "subject": "국어",
-    "year": 2025,
-    "month": "09",
-    "question_number": 39,
-    "topic": "통사론"
-  }
+  "source": "2025학년도 수능 모의평가",
+  "year": 2025,
+  "month": "09",
+  "exam_type_code": 2,
+  "type": "언어와 매체",
+  "subject_code": "12",
+  "answer_rate": 0,
+  "context_box": null
 }
