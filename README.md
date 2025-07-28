@@ -81,8 +81,7 @@ python search_and_expand.py
 ### 5. 개발 예정 기능
 
 ```bash
-# 문제 자동 생성 (아직 구현되지 않음)
-# python auto_question_generator.py  # 향후 개발 예정
+# gemini 2.5 pro api 활용 문항 생성
 ```
 
 ## 데이터 구조
@@ -143,9 +142,9 @@ snoriginal/
 - `chromadb`: 벡터 데이터베이스
 - `PyPDF2`: PDF 텍스트 추출 및 분할
 - `tiktoken`: 토큰 계산
-- `python-dotenv`: 환경 변수 관리
 - `numpy`: 수치 연산
 - `scikit-learn`: 머신러닝 유틸리티
+- `python-dotenv`: 환경 변수 관리
 
 # 경로 및 주의사항
 
@@ -163,4 +162,4 @@ $ SN_SRC_DIR=/mnt/datasets/json \
 
 ## 라이선스
 
-[GNU General Public License v3.0](LICENSE)]
+[GNU General Public License v3.0](LICENSE)
