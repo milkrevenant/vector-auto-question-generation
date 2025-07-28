@@ -96,7 +96,6 @@ snoriginal/
 │   ├── 25_09.pdf
 │   └── */split/            # 각 시험별 분할된 페이지 PDF
 ├── build_sn_db.py          # 벡터 DB 구축 스크립트
-├── query_sn_db.py          # 벡터 검색 스크립트
 ├── search_and_expand.py    # 확장 검색 스크립트
 ├── requirements.txt        # 필요 라이브러리
 ├── LICENSE                 # GPL v3.0 라이선스
