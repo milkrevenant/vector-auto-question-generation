@@ -13,7 +13,14 @@
       "Bash(true)",
       "Bash(done)",
       "Bash(do mv \"25_06_$i_lang.json\" \"25_06_$i_2.json\")",
-      "Bash(python:*)"
+      "Bash(python:*)",
+      "Bash(pip install:*)",
+      "Bash(chmod:*)",
+      "Bash(pdftotext:*)",
+      "Bash(for f in 25_11_{23..26}.json)",
+      "Bash(do echo \"=== $f ===\")",
+      "Bash(jq:*)",
+      "Bash(find:*)"
     ],
     "deny": []
   }
