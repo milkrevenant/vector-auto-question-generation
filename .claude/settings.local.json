@@ -20,7 +20,13 @@
       "Bash(for f in 25_11_{23..26}.json)",
       "Bash(do echo \"=== $f ===\")",
       "Bash(jq:*)",
-      "Bash(find:*)"
+      "Bash(find:*)",
+      "Bash(for i in {18..34})",
+      "Bash(do if [ -f \"25_11_$i.json\" ])",
+      "Bash(then sed -i '' 's/\"\"type\"\": \"\".*\"\"/\"\"type\"\": \"\"문학\"\"/' \"25_11_$i.json\")",
+      "Bash(fi)",
+      "Bash(for:*)",
+      "Bash(do echo \"Processing $file\")"
     ],
     "deny": []
   }

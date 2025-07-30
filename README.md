@@ -23,22 +23,24 @@
 - JSON 형식으로 구조화하여 저장
 - 각 문제별로 지문, 문제, 선택지, 정답 등 포함
 
-### 2. Vector DB 생성
+### 2. 통합 처리 시스템
+
+#### `sn_processor.py` (신규 통합 스크립트)
+모든 처리 과정을 하나의 스크립트로 통합:
+- **PDF 분할**: `python sn_processor.py split -i pdforg/25_11.pdf`
+- **JSON 추출**: `python sn_processor.py extract -i pdforg/25_11_split --exam-year 2025 --exam-month 11`
+- **DB 구축**: `python sn_processor.py build-db`
+- **검색**: `python sn_processor.py search -q "검색어"`
+
+### 3. 레거시 시스템 (기존 방식)
 
 #### `build_sn_db.py`
 - JSON 문제 데이터를 벡터 임베딩으로 변환
 - OpenAI `text-embedding-3-large` 모델 사용 (3072)
-- ChromaDB에 저장 (코사인 유사도 기반) / 추후 다른 db로도 개발할 예정있음.
-
-#### `query_sn_db.py`
-- 벡터 데이터베이스 검색 인터페이스
-- 유사 문제 검색 및 분석
-- 대화형 검색 지원
-
-### 3. 문제 생성 시스템
+- ChromaDB에 저장 (코사인 유사도 기반)
 
 #### `search_and_expand.py`
-- 'query_sn_db.py'가 단순히 가까운 벡터값의 지문/문제를 알려주는 거라면 'search_and_expand.py'는 좀 더 세밀하게 그 세부값을 보여주는 것으로 구축
+- 벡터 데이터베이스 검색 및 확장 기능
 - 검색된 문제를 기반으로 새로운 문제 생성 기능 포함
 - 파일 생성이 아닌 '텍스트'형태의 데이터로만 제공(현재)
 
@@ -71,9 +73,25 @@ python build_sn_db.py
 
 ### 4. 사용 가능한 기능
 
+#### 통합 스크립트 사용법 (권장)
 ```bash
-# 벡터 검색 테스트
-python query_sn_db.py
+# 1. PDF 분할
+python sn_processor.py split -i pdforg/25_11.pdf
+
+# 2. JSON 추출 (분할된 PDF에서)
+python sn_processor.py extract -i pdforg/25_11_split --exam-year 2025 --exam-month 11 -o db
+
+# 3. 데이터베이스 구축
+python sn_processor.py build-db -i db
+
+# 4. 검색
+python sn_processor.py search -q "배꼽"
+```
+
+#### 레거시 방식
+```bash
+# 벡터 DB 구축
+python build_sn_db.py
 
 # 검색 및 문제 생성 기능
 python search_and_expand.py
@@ -95,8 +113,9 @@ snoriginal/
 │   ├── 25_06.pdf
 │   ├── 25_09.pdf
 │   └── */split/            # 각 시험별 분할된 페이지 PDF
-├── build_sn_db.py          # 벡터 DB 구축 스크립트
-├── search_and_expand.py    # 확장 검색 스크립트
+├── sn_processor.py         # 통합 처리 스크립트 (PDF분할, JSON추출, DB구축, 검색)
+├── build_sn_db.py          # 벡터 DB 구축 스크립트 (레거시)
+├── search_and_expand.py    # 확장 검색 스크립트 (레거시)
 ├── requirements.txt        # 필요 라이브러리
 ├── LICENSE                 # GPL v3.0 라이선스
 ├── README.md               # 프로젝트 문서
