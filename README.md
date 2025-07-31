@@ -32,23 +32,38 @@
 - **DB 구축**: `python sn_processor.py build-db`
 - **검색**: `python sn_processor.py search -q "검색어"`
 
-### 3. 레거시 시스템 (기존 방식)
+### 3. 벡터 DB 구축 시스템
 
-#### `build_sn_db.py`
-- JSON 문제 데이터를 벡터 임베딩으로 변환
-- OpenAI `text-embedding-3-large` 모델 사용 (3072)
-- ChromaDB에 저장 (코사인 유사도 기반)
+#### 개발 과정
+1. **초기 개발** (`apiembed_generation.py` + `build_sn_db.py`)
+   - OpenAI의 `text-embedding-3-large` 모델 사용 (3072차원)
+   - API 호출을 통한 임베딩 생성
+   - ChromaDB에 저장 (코사인 유사도 기반)
 
-#### `search_and_expand.py`
+2. **임베딩 모델 변경** (`build_sn_db2.py`) - **현재 사용 중**
+   - 로컬 SentenceTransformer 모델로 전환: `nlpai-lab/KURE-v1` (1024차원)
+   - **한국어 특화 모델로 더 높은 정확도 달성**
+   - API 의존성 제거로 비용 절감
+   - 청크 기반 임베딩 및 읽기 난이도 지표 추가
+   - CPU에서 실행되어 안정적
+
+3. **GUI 버전 구현** (`localembed_generation_gui.py`)
+   - 로컬 임베딩 모델 (`nlpai-lab/KURE-v1`) 기반 GUI 애플리케이션
+   - 사용자 친화적 인터페이스로 검색 및 문제 생성
+
+### 4. 검색 및 문제 생성 시스템
+
+#### `search_and_expand.py` (CLI 버전)
 - 벡터 데이터베이스 검색 및 확장 기능
 - 검색된 문제를 기반으로 새로운 문제 생성 기능 포함
 - 파일 생성이 아닌 '텍스트'형태의 데이터로만 제공(현재)
 
-#### `search_and_expand_gui.py` (GUI 버전)
+#### `localembed_generation_gui.py` (GUI 버전)
 - 그래픽 사용자 인터페이스로 검색 및 문제 생성
 - 지문 유형별 필터링 (문학, 독서, 화법, 작문, 언어, 매체)
 - 파일 입력 지원 (txt, rtf, docx, pdf, md)
 - 유사 지문 검색 및 미리보기
+- 목표 난이도 설정 기능
 - 선택한 유사 지문 기반으로 새 문제 생성
 - 결과 저장 기능
 
@@ -75,11 +90,11 @@ OPENAI_API_KEY=your_openai_api_key
 ### 3. 데이터베이스 구축
 
 ```bash
-# 벡터 DB 구축 (JSON 파일이 이미 준비되어 있음)
-python build_sn_db.py
+# 벡터 DB 구축 (로컬 임베딩 모델 사용)
+python build_sn_db2.py
 ```
 
-### 4. GUI 사용법 (search_and_expand_gui.py)
+### 4. GUI 사용법 (localembed_generation_gui.py)
 
 GUI 버전은 더 직관적인 인터페이스를 제공합니다:
 
@@ -110,16 +125,22 @@ python sn_processor.py build-db -i db
 python sn_processor.py search -q "배꼽"
 ```
 
-#### 레거시 방식
+#### 현재 권장 방식
+```bash
+# 벡터 DB 구축 (로컬 임베딩)
+python build_sn_db2.py
+
+# 검색 및 문제 생성 기능 (GUI)
+python localembed_generation_gui.py
+```
+
+#### 레거시 방식 (OpenAI 임베딩)
 ```bash
 # 벡터 DB 구축
 python build_sn_db.py
 
 # 검색 및 문제 생성 기능 (CLI)
 python search_and_expand.py
-
-# 검색 및 문제 생성 기능 (GUI)
-python search_and_expand_gui.py
 ```
 
 
@@ -139,14 +160,17 @@ snoriginal/
 │   ├── 25_09.pdf
 │   └── */split/            # 각 시험별 분할된 페이지 PDF
 ├── sn_processor.py         # 통합 처리 스크립트 (PDF분할, JSON추출, DB구축, 검색)
-├── build_sn_db.py          # 벡터 DB 구축 스크립트 (레거시)
-├── search_and_expand.py    # 확장 검색 스크립트 (레거시)
-├── search_and_expand_gui.py # GUI 버전 검색 및 문제 생성
+├── build_sn_db.py          # 벡터 DB 구축 스크립트 (OpenAI 임베딩)
+├── build_sn_db2.py         # 벡터 DB 구축 스크립트 (로컬 임베딩) - 현재 사용
+├── apiembed_generation.py  # 초기 개발 시 OpenAI 임베딩 테스트
+├── search_and_expand.py    # CLI 검색 스크립트
+├── localembed_generation_gui.py # GUI 버전 검색 및 문제 생성 - 현재 사용
 ├── requirements.txt        # 필요 라이브러리
 ├── LICENSE                 # GPL v3.0 라이선스
 ├── README.md               # 프로젝트 문서
 ├── db_construction_guide.md # 데이터베이스 구축 완전 가이드
-├── sn_csat.db/             # ChromaDB 벡터 데이터베이스 (gitignore)
+├── sn_csat.db/             # ChromaDB 벡터 데이터베이스 - OpenAI 임베딩 (gitignore)
+├── sn_csat_2.db/           # ChromaDB 벡터 데이터베이스 - 로컬 임베딩 (gitignore)
 └── venv/                   # 가상환경 (gitignore)
 ```
 
@@ -174,30 +198,37 @@ snoriginal/
 
 -  **데이터**: 수동 검증을 거친 문제 데이터이기 때문에 불완전함.
 -  **검색**: ChromaDB 기반 벡터 검색
--  **임베딩**: OpenAI text-embedding-3-large  (3072)
+-  **임베딩**: 
+   - 초기: OpenAI text-embedding-3-large (3072차원)
+   - **현재: nlpai-lab/KURE-v1 (1024차원) - 한국어 특화 모델로 더 높은 정확도**
 
 ## Requirements
 
-- `openai`: OpenAI 임베딩 모델 및 GPT API
+- `openai`: GPT API (문제 생성용)
+- `sentence-transformers`: 로컬 임베딩 모델
 - `chromadb`: 벡터 데이터베이스
 - `PyPDF2`: PDF 텍스트 추출 및 분할
 - `tiktoken`: 토큰 계산
 - `numpy`: 수치 연산
 - `scikit-learn`: 머신러닝 유틸리티
 - `python-dotenv`: 환경 변수 관리
+- `kiwipiepy`: 한국어 형태소 분석기
 
 # 경로 및 주의사항
 
-- 기본 실행 방법
-$ python build_sn_db.py
-- ./db 폴더의 JSON을 임베딩해 ./sn_csat.db에 저장
+- 기본 실행 방법 (로컬 임베딩 사용)
+$ python build_sn_db2.py
+- ./db 폴더의 JSON을 임베딩해 ./sn_csat_2.db에 저장
+
+- GUI 실행
+$ python localembed_generation_gui.py
 
 - 경로 커스텀 필요한 부분
 $ SN_SRC_DIR=/mnt/datasets/json \ 
-  SN_DB_PATH=$HOME/data/sn_csat.db \
-  python build_sn_db.py
+  SN_DB_PATH=$HOME/data/sn_csat_2.db \
+  python build_sn_db2.py
 
-- OpenAI API 키가 필요
+- OpenAI API 키는 문제 생성 시에만 필요 (임베딩은 로컬 모델 사용)
 - 생성된 문제는 검토가 반드시 필요(이건 어차피 나중에)
 
 ## 라이선스
