@@ -44,6 +44,14 @@
 - 검색된 문제를 기반으로 새로운 문제 생성 기능 포함
 - 파일 생성이 아닌 '텍스트'형태의 데이터로만 제공(현재)
 
+#### `search_and_expand_gui.py` (GUI 버전)
+- 그래픽 사용자 인터페이스로 검색 및 문제 생성
+- 지문 유형별 필터링 (문학, 독서, 화법, 작문, 언어, 매체)
+- 파일 입력 지원 (txt, rtf, docx, pdf, md)
+- 유사 지문 검색 및 미리보기
+- 선택한 유사 지문 기반으로 새 문제 생성
+- 결과 저장 기능
+
 ## 설치 및 사용법
 
 ### 1. 환경 설정
@@ -71,7 +79,21 @@ OPENAI_API_KEY=your_openai_api_key
 python build_sn_db.py
 ```
 
-### 4. 사용 가능한 기능
+### 4. GUI 사용법 (search_and_expand_gui.py)
+
+GUI 버전은 더 직관적인 인터페이스를 제공합니다:
+
+1. **API 키 설정**: 프로그램 시작 후 OpenAI API 키 입력
+2. **지문 유형 선택**: 전체, 문학, 독서, 화법, 작문, 언어, 매체 중 선택
+3. **지문 입력**: 
+   - 파일 선택 버튼으로 파일 불러오기 (txt, rtf, docx, pdf, md 지원)
+   - 또는 텍스트 영역에 직접 입력
+4. **유사 지문 검색**: 검색 버튼 클릭으로 유사 지문 찾기
+5. **유사 지문 선택**: 검색 결과에서 참고할 지문 선택 (복수 선택 가능)
+6. **문제 생성**: 선택한 지문 기반으로 새 문제 생성
+7. **결과 저장**: 생성된 문제를 텍스트 파일로 저장
+
+### 5. 사용 가능한 기능
 
 #### 통합 스크립트 사용법 (권장)
 ```bash
@@ -93,8 +115,11 @@ python sn_processor.py search -q "배꼽"
 # 벡터 DB 구축
 python build_sn_db.py
 
-# 검색 및 문제 생성 기능
+# 검색 및 문제 생성 기능 (CLI)
 python search_and_expand.py
+
+# 검색 및 문제 생성 기능 (GUI)
+python search_and_expand_gui.py
 ```
 
 
@@ -116,10 +141,11 @@ snoriginal/
 ├── sn_processor.py         # 통합 처리 스크립트 (PDF분할, JSON추출, DB구축, 검색)
 ├── build_sn_db.py          # 벡터 DB 구축 스크립트 (레거시)
 ├── search_and_expand.py    # 확장 검색 스크립트 (레거시)
+├── search_and_expand_gui.py # GUI 버전 검색 및 문제 생성
 ├── requirements.txt        # 필요 라이브러리
 ├── LICENSE                 # GPL v3.0 라이선스
 ├── README.md               # 프로젝트 문서
-├── CLAUDE_SETUP.md         # Claude API 활용 가이드
+├── db_construction_guide.md # 데이터베이스 구축 완전 가이드
 ├── sn_csat.db/             # ChromaDB 벡터 데이터베이스 (gitignore)
 └── venv/                   # 가상환경 (gitignore)
 ```
