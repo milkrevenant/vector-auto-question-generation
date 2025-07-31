@@ -88,11 +88,11 @@ def generate_with_openai(new_passage, template_questions, marker_map, n_question
     marker_map: dict like {'㉠': '...', 'ⓐ': '...'} to include in prompt.
     """
     system = ("You are a Korean CSAT question writer.\n"
-              "• Output exactly five problems.\n"
-              "• Prefix only each full problem with 1. 2. 3. 4. 5. — do NOT add extra numbering inside the sentence.\n"
-              "• Do not list answer choices; just the stem.\n"
-              "• If markers such as ㉠, ㉡, ⓐ~ⓔ appear, clearly mention their meaning using the 표지-문맥 information so that students know what the marker refers to.\n"
-              "• Return only the new problems. Do NOT include any original template questions or extra commentary.")
+          "• Output up to four problems.\n"
+          "• Each problem must display exactly 5 answer choices numbered ① ② ③ ④ ⑤.\n"
+          "• If any sample includes <보기>, include at least one problem with <보기>.\n"
+          "• If the sample uses ⓐ~ⓔ replace-word style, create one similar problem and wrap markers with <u>…</u>.\n"
+          "• Follow the tone and length of the sample questions and return only the new problems.")
     user_prompt = f"""
 새 지문:
 \"\"\"{new_passage}\"\"\"
@@ -121,7 +121,7 @@ class SearchExpandGUI:
     def __init__(self, root):
         self.root = root
         self.root.title("수능 지문 검색 및 문제 생성기")
-        self.root.geometry("1200x800")
+        self.root.geometry("1400x900")
         
         self.selected_type = tk.StringVar(value="전체")
         self.selected_candidates = []
@@ -191,7 +191,7 @@ class SearchExpandGUI:
         ttk.Label(input_frame, text="또는 아래에 직접 입력:").grid(row=0, column=1, padx=5)
         
         # 텍스트 입력 영역
-        self.text_input = scrolledtext.ScrolledText(input_frame, height=15, width=50)
+        self.text_input = scrolledtext.ScrolledText(input_frame, height=20, width=70)
         self.text_input.grid(row=1, column=0, columnspan=2, padx=5, pady=5)
         
         # 3. 검색 버튼
@@ -206,7 +206,7 @@ class SearchExpandGUI:
         result_frame.grid(row=0, column=0, sticky=(tk.W, tk.E, tk.N, tk.S), pady=5)
         
         # 결과 리스트박스
-        self.result_listbox = tk.Listbox(result_frame, height=10, selectmode=tk.MULTIPLE)
+        self.result_listbox = tk.Listbox(result_frame, height=15, selectmode=tk.MULTIPLE)
         self.result_listbox.grid(row=0, column=0, sticky=(tk.W, tk.E, tk.N, tk.S), padx=5, pady=5)
         
         # 스크롤바
@@ -216,7 +216,7 @@ class SearchExpandGUI:
         
         # 미리보기
         ttk.Label(result_frame, text="미리보기:").grid(row=1, column=0, sticky=tk.W, padx=5)
-        self.preview_text = scrolledtext.ScrolledText(result_frame, height=4, width=50)
+        self.preview_text = scrolledtext.ScrolledText(result_frame, height=6, width=70)
         self.preview_text.grid(row=2, column=0, columnspan=2, padx=5, pady=5)
         
         # 5. 문제 생성 버튼
@@ -228,7 +228,7 @@ class SearchExpandGUI:
         question_frame = ttk.LabelFrame(right_frame, text="4. 생성된 문제", padding="5")
         question_frame.grid(row=1, column=0, sticky=(tk.W, tk.E, tk.N, tk.S), pady=5)
         
-        self.question_text = scrolledtext.ScrolledText(question_frame, height=15, width=50)
+        self.question_text = scrolledtext.ScrolledText(question_frame, height=20, width=70)
         self.question_text.grid(row=0, column=0, padx=5, pady=5, sticky=(tk.W, tk.E, tk.N, tk.S))
         
         # 저장 버튼
@@ -474,15 +474,22 @@ class SearchExpandGUI:
             # marker map from first doc in group
             base_text = all_sets[0]["doc"] if all_sets else ""
             marker_map = extract_marker_map(base_text)
+            # Apply HTML underline tags
+            new_pass_mod = self.query_text
+            for m in ["㉠","㉡","㉢","ⓐ","ⓑ","ⓒ","ⓓ","ⓔ"]:
+                new_pass_mod = new_pass_mod.replace(m, f"<u>{m}</u>")
             # 새 문제 생성
-            new_questions = generate_with_openai(self.query_text, old_questions, marker_map, n_questions=5)
+            new_questions = generate_with_openai(new_pass_mod, old_questions, marker_map, n_questions=4)
 
             # 결과 표시
             self.question_text.delete(1.0, tk.END)
             result_text = "=== 생성된 문제 ===\n\n"
             for idx, nq in enumerate(new_questions, 1):
-                result_text += f"{idx}. {nq}\n\n"
-
+                # 이미 1.·2. 로 시작하면 그대로 두고, 아니면 앞에 붙임
+                if re.match(r"^\d+\.", nq):
+                    result_text += f"{nq}\n\n"
+                else:
+                    result_text += f"{idx}. {nq}\n\n"
 
             self.question_text.insert(1.0, result_text)
 
