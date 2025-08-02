@@ -46,6 +46,11 @@
    - API 의존성 제거로 비용 절감
    - 청크 기반 임베딩 및 읽기 난이도 지표 추가
    - CPU에서 실행되어 안정적
+   
+   **Windows 버전** (`build_sn_db2_windows.py`)
+   - Windows 환경을 위한 별도 스크립트
+   - 경로 설정이 Windows 형식으로 수정됨 (예: `C:\\Users\\...`)
+   - 동일한 기능과 임베딩 모델 사용
 
 3. **GUI 버전 구현** (`localembed_generation_gui.py`)
    - 로컬 임베딩 모델 (`nlpai-lab/KURE-v1`) 기반 GUI 애플리케이션
@@ -92,6 +97,9 @@ OPENAI_API_KEY=your_openai_api_key
 ```bash
 # 벡터 DB 구축 (로컬 임베딩 모델 사용)
 python build_sn_db2.py
+
+# Windows 환경에서 실행
+python build_sn_db2_windows.py
 ```
 
 ### 4. GUI 사용법 (localembed_generation_gui.py)
@@ -130,6 +138,9 @@ python sn_processor.py search -q "배꼽"
 # 벡터 DB 구축 (로컬 임베딩)
 python build_sn_db2.py
 
+# Windows에서는:
+python build_sn_db2_windows.py
+
 # 검색 및 문제 생성 기능 (GUI)
 python localembed_generation_gui.py
 ```
@@ -162,6 +173,7 @@ snoriginal/
 ├── sn_processor.py         # 통합 처리 스크립트 (PDF분할, JSON추출, DB구축, 검색)
 ├── build_sn_db.py          # 벡터 DB 구축 스크립트 (OpenAI 임베딩)
 ├── build_sn_db2.py         # 벡터 DB 구축 스크립트 (로컬 임베딩) - 현재 사용
+├── build_sn_db2_windows.py # Windows용 벡터 DB 구축 스크립트 (로컬 임베딩)
 ├── apiembed_generation.py  # 초기 개발 시 OpenAI 임베딩 테스트
 ├── search_and_expand.py    # CLI 검색 스크립트
 ├── localembed_generation_gui.py # GUI 버전 검색 및 문제 생성 - 현재 사용
@@ -219,6 +231,11 @@ snoriginal/
 - 기본 실행 방법 (로컬 임베딩 사용)
 $ python build_sn_db2.py
 - ./db 폴더의 JSON을 임베딩해 ./sn_csat_2.db에 저장
+
+- Windows 환경에서 실행
+$ python build_sn_db2_windows.py
+- 경로가 C:\Users\... 형식으로 하드코딩됨
+- 필요시 스크립트 내 SRC_DIR 변수 수정
 
 - GUI 실행
 $ python localembed_generation_gui.py
